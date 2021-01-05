@@ -10,5 +10,6 @@ namespace StudentManagementSystem.Website.ViewModels
     {
         public IEnumerable<GroupModel> Groups { get; set; }
         public string CurrentCourse { get; set; }
+        public IEnumerable<StudentModel> Students { get; set; }
     }
 }

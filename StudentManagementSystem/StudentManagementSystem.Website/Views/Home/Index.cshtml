@@ -3,15 +3,41 @@
 }
 
 @model HomeViewModel
-
+<!--
 <div class="text-center">
     <h1 class="display-4">Select course</h1>
     @foreach (var course in Model.Courses)
     {
         <a asp-controller="Group" asp-action="GroupList" asp-route-courseId="@course.CourseId" asp-route-courseName="@course.Name"> <h1>@course.Name</h1></a>
 
-        }
+    }
 
-    </div>
+</div>
+-->
 
-  
+<div class="col-sm-12 col-lg-12 col-md-12">
+    <h1 class="display-4">Select course</h1>
+</div>
+<div class="col-sm-12 col-lg-12 col-md-12">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Course Name</th>
+                <th scope="col">Description</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var course in Model.Courses)
+            {
+                <tr>
+                    <th scope="row" style="width: 33.3%;text-align:justify">@course.CourseId</th>
+                    <td style="width: 33.3%;text-align:justify"><a asp-controller="Group" asp-action="GroupList" asp-route-courseId="@course.CourseId" asp-route-courseName="@course.Name">@course.Name</a></td>
+                    <td style="width: 33.3%;text-align:justify">@course.Description</td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

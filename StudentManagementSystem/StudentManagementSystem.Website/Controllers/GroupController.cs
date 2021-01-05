@@ -13,9 +13,15 @@ namespace StudentManagementSystem.Website.Controllers
     {
         public IActionResult GroupList(int courseId, string courseName)
         {
+
             var groupViewModel = new GroupViewModel();
             groupViewModel.Groups = GlobalConfig.Repository.GetGroups_ByCourse(courseId);
             groupViewModel.CurrentCourse = courseName;
+
+            foreach (var group in groupViewModel.Groups)
+            {
+                group.Students = GlobalConfig.Repository.GetStudents_ByGroup(group.GroupId);
+            }
 
             return View(groupViewModel);
         }
