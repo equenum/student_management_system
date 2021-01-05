@@ -1,0 +1,8 @@
+﻿@model StudentViewModel
+
+<h1 class="display-4">@Model.CurrentGroup</h1>
+
+@foreach (var student in Model.Students)
+{
+    <a href="#"><h1>@student.FirstName</h1></a>
+}

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using StudentManagementSystem.Website.Models;
+using StudentManagementSystem.Website.ViewModels;
 using StudentManagementSystemLibrary;
 using StudentManagementSystemLibrary.Models;
 using System;
@@ -13,29 +14,14 @@ namespace StudentManagementSystem.Website.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
+        //private IEnumerable<CourseModel> courses = GlobalConfig.Repository.GetCourses_All();
 
         public IActionResult Index()
         {
-            List<CourseModel> courses = GlobalConfig.Repository.GetCourses_All();
+            var homeViewModel = new HomeViewModel();
+            homeViewModel.Courses = GlobalConfig.Repository.GetCourses_All();
 
-            return View(courses);
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(homeViewModel);
         }
     }
 }

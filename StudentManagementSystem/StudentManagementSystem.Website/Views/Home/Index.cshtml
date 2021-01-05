@@ -2,15 +2,16 @@
     ViewData["Title"] = "Home Page";
 }
 
-@model IEnumerable<CourseModel>
+@model HomeViewModel
 
 <div class="text-center">
     <h1 class="display-4">Select course</h1>
-    @foreach (var course in Model)
+    @foreach (var course in Model.Courses)
     {
-        <a href="#"><h1>@course.Name</h1></a>
+        <a asp-controller="Group" asp-action="GroupList" asp-route-courseId="@course.CourseId" asp-route-courseName="@course.Name"> <h1>@course.Name</h1></a>
 
-    }
+        }
 
-</div>
+    </div>
 
+  

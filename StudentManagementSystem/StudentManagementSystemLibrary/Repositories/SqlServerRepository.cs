@@ -135,5 +135,45 @@ namespace StudentManagementSystemLibrary.Repositories
                 connection.Query<GroupModel>("dbo.spGroup_DeleteById", p, commandType: CommandType.StoredProcedure).ToList();
             }
         }
+
+        /// <summary>
+        /// Gets group information by course from the database.
+        /// </summary>
+        /// <param name="courseId">Course id.</param>
+        /// <returns>A list of group information.</returns>
+        public List<GroupModel> GetGroups_ByCourse(int courseId)
+        {
+            List<GroupModel> output;
+
+            using (IDbConnection connection = new SqlConnection(GlobalConfig.GetConnString(connStringName)))
+            {
+                var p = new DynamicParameters();
+                p.Add("@CourseId", courseId);
+
+                output = connection.Query<GroupModel>("dbo.spGroups_GetByCourse", p, commandType: CommandType.StoredProcedure).ToList();
+            }
+
+            return output;
+        }
+
+        /// <summary>
+        /// Gets student information by group from the database.
+        /// </summary>
+        /// <param name="courseId">Group id.</param>
+        /// <returns>A list of student information.</returns>
+        public List<StudentModel> GetStudents_ByGroup(int groupId)
+        {
+            List<StudentModel> output;
+
+            using (IDbConnection connection = new SqlConnection(GlobalConfig.GetConnString(connStringName)))
+            {
+                var p = new DynamicParameters();
+                p.Add("@GroupId", groupId);
+
+                output = connection.Query<StudentModel>("dbo.spStudents_GetByGroup", p, commandType: CommandType.StoredProcedure).ToList();
+            }
+
+            return output;
+        }
     }
 }

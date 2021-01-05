@@ -1,0 +1,10 @@
+﻿@model GroupViewModel
+
+
+<h1 class="display-4">@Model.CurrentCourse</h1>
+
+@foreach (var group in Model.Groups)
+{
+    <a asp-controller="Student" asp-action="StudentList" asp-route-groupId="@group.GroupId" asp-route-groupName="@group.Name"><h1>@group.Name</h1></a>
+
+}
