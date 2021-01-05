@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using StudentManagementSystem.Website.Models;
+using StudentManagementSystemLibrary;
+using StudentManagementSystemLibrary.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -20,7 +22,9 @@ namespace StudentManagementSystem.Website.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            List<CourseModel> courses = GlobalConfig.Repository.GetCourses_All();
+
+            return View(courses);
         }
 
         public IActionResult Privacy()

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using StudentManagementSystemLibrary;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,6 +53,11 @@ namespace StudentManagementSystem.Website
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            // TODO - Delete if I am wrong. Rename
+            // Initialize the database connection.
+            GlobalConfig.GetAppSettingsFile();
+            GlobalConfig.InitializeConnections(RepositoryTypes.SqlServerRepository);
         }
     }
 }
