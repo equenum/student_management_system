@@ -9,6 +9,7 @@ namespace StudentManagementSystem.Website.ViewModels
     public class StudentViewModel
     {
         public IEnumerable<StudentModel> Students { get; set; }
-        public string CurrentGroup { get; set; }
+        public string CurrentGroupName { get; set; }
+        public int CurrentGroupId { get; set; }
     }
 }

@@ -175,5 +175,25 @@ namespace StudentManagementSystemLibrary.Repositories
 
             return output;
         }
+
+        /// <summary>
+        /// Gets student information by id from the database.
+        /// </summary>
+        /// <param name="courseId">Student id.</param>
+        /// <returns>Student information.</returns>
+        public StudentModel GetStudent_ById(int studentId)
+        {
+            List<StudentModel> output;
+
+            using (IDbConnection connection = new SqlConnection(GlobalConfig.GetConnString(connStringName)))
+            {
+                var p = new DynamicParameters();
+                p.Add("@StudentId", studentId);
+
+                output = connection.Query<StudentModel>("dbo.spStudent_GetById", p, commandType: CommandType.StoredProcedure).ToList();
+            }
+
+            return output.First();
+        }
     }
 }

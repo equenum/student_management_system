@@ -6,7 +6,7 @@
 
 
 <div class="col-sm-12 col-lg-12 col-md-12">
-    <h1 class="display-4">@Model.CurrentGroup</h1>
+    <h1 class="display-4">@Model.CurrentGroupName Group</h1>
 </div>
 <div class="col-sm-12 col-lg-12 col-md-12">
     <table class="table">
@@ -25,9 +25,13 @@
                     <th scope="row" style="width: 25%">@student.StudentId</th>
                     <td style="width: 25%">@student.FirstName</td>
                     <td style="width: 25%">@student.LastName</td>
-                    <td style="width: 25%"><button type="button" class="btn btn-info">Edit</button></td>
+                    <td style="width: 25%"><a class="btn btn-info" 
+                            asp-controller="Student" asp-action="StudentEdit" asp-route-studentId="@student.StudentId" 
+                                asp-route-groupId="@Model.CurrentGroupId" asp-route-groupName="@Model.CurrentGroupName">Edit</a></td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
+
+
