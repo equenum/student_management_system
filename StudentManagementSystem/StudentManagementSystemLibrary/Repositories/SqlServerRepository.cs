@@ -14,186 +14,77 @@ namespace StudentManagementSystemLibrary.Repositories
         private readonly string connStringName = "SqlServer";
 
         /// <summary>
-        /// Gets all course information from the database.
+        /// Gets all data from the database according to SQL-query provided.
         /// </summary>
-        /// <returns>A list of course information.</returns>
-        public List<CourseModel> GetCourses_All()
-        {
-            List<CourseModel> output;
-
-            using (IDbConnection connection = new SqlConnection(GlobalConfig.GetConnString(connStringName)))
-            {
-                output = connection.Query<CourseModel>("dbo.spCourses_GetAll").ToList();
-
-                foreach (var course in output)
-                {
-                    var p = new DynamicParameters();
-                    p.Add("@CourseId", course.CourseId);
-
-                    course.Groups = connection.Query<GroupModel>("dbo.spGroups_GetByCourse", p, commandType: CommandType.StoredProcedure).ToList();
-
-                    foreach (var group in course.Groups)
-                    {
-                        p = new DynamicParameters();
-                        p.Add("@GroupId", group.GroupId);
-
-                        group.Students = connection.Query<StudentModel>("dbo.spStudents_GetByGroup", p, commandType: CommandType.StoredProcedure).ToList();
-                    }
-                }
-            }
-
-            return output;
-        }
-
-        /// <summary>
-        /// Gets all group information from the database.
-        /// </summary>
-        /// <returns>A list of group information.</returns>
-        public List<GroupModel> GetGroups_All()
-        {
-            List<GroupModel> output;
-
-            using (IDbConnection connection = new SqlConnection(GlobalConfig.GetConnString(connStringName)))
-            {
-                output = connection.Query<GroupModel>("dbo.spGroups_GetAll").ToList();
-
-                foreach (var group in output)
-                {
-                    var p = new DynamicParameters();
-                    p.Add("@GroupId", group.GroupId);
-
-                    group.Students = connection.Query<StudentModel>("dbo.spStudents_GetByGroup", p, commandType: CommandType.StoredProcedure).ToList();
-                }
-            }
-
-            return output;
-        }
-
-        /// <summary>
-        /// Gets all student information from the database.
-        /// </summary>
-        /// <returns>A list of student information.</returns>
-        public List<StudentModel> GetStudents_All()
-        {
-            List<StudentModel> output;
-
-            using (IDbConnection connection = new SqlConnection(GlobalConfig.GetConnString(connStringName)))
-            {
-                output = connection.Query<StudentModel>("dbo.spStudents_GetAll").ToList();
-            }
-
-            return output;
-        }
-
-        /// <summary>
-        /// Updates name for the group specified by id.
-        /// </summary>
-        /// <param name="groupId">Group id.</param>
-        /// <param name="updatedName">Updated (new) name for the group.</param>
-        public void UpdateGroupName(int groupId, string updatedName)
+        /// <typeparam name="T">Object of interest class.</typeparam>
+        /// <param name="sql">SQL-query.</param>
+        /// <returns>A list of all data from the database according to SQL-query provided.</returns>
+        public List<T> GetData_All<T>(string sql)
         {
             using (IDbConnection connection = new SqlConnection(GlobalConfig.GetConnString(connStringName)))
             {
-                var p = new DynamicParameters();
-                p.Add("@GroupId", groupId);
-                p.Add("@UpdatedName", updatedName);
+                var output = connection.Query<T>(sql, new DynamicParameters());
 
-                connection.Query<GroupModel>("dbo.spGroup_UpdateNameById", p, commandType: CommandType.StoredProcedure).ToList();
+                return output.ToList();
             }
         }
 
         /// <summary>
-        /// Updates first and second names for the student specified by id.
+        /// Gets data by id from the database according to SQL-query provided.
         /// </summary>
-        /// <param name="studentId">Student id.</param>
-        /// <param name="updatedFirstName">Updated (new) first name for the student.</param>
-        /// <param name="updatedLastName">Updated (new) last name for the student.</param>
-        public void UpdateStudentName(int studentId, string updatedFirstName, string updatedLastName)
+        /// <typeparam name="T">Object of interest class.</typeparam>
+        /// <param name="sql">SQL-query.</param>
+        /// <returns>A list of data by id from the database according to SQL-query provided.</returns>
+        public List<T> GetListData_ById<T>(string sql)
         {
             using (IDbConnection connection = new SqlConnection(GlobalConfig.GetConnString(connStringName)))
             {
-                var p = new DynamicParameters();
-                p.Add("@StudentId", studentId);
-                p.Add("@UpdatedFirstName", updatedFirstName);
-                p.Add("@UpdatedLastName", updatedLastName);
+                var output = connection.Query<T>(sql, new DynamicParameters());
 
-                connection.Query<StudentModel>("dbo.spStudent_UpdateNameById", p, commandType: CommandType.StoredProcedure).ToList();
+                return output.ToList();
             }
         }
 
         /// <summary>
-        /// Deletes the group specified by id.
+        /// Updates data in the database according to SQL-query provided.
         /// </summary>
-        /// <param name="groupId">Group id.</param>
-        public void DeleteGroup(int groupId)
+        /// <typeparam name="T">Object of interest class.</typeparam>
+        /// <param name="sql">SQL-query.</param>
+        public void UpdateData<T>(string sql)
         {
             using (IDbConnection connection = new SqlConnection(GlobalConfig.GetConnString(connStringName)))
             {
-                var p = new DynamicParameters();
-                p.Add("@GroupId", groupId);
-
-                connection.Query<GroupModel>("dbo.spGroup_DeleteById", p, commandType: CommandType.StoredProcedure).ToList();
+                connection.Execute(sql);
             }
         }
 
         /// <summary>
-        /// Gets group information by course from the database.
+        /// Deletes data from the database according to SQL-query provided.
         /// </summary>
-        /// <param name="courseId">Course id.</param>
-        /// <returns>A list of group information.</returns>
-        public List<GroupModel> GetGroups_ByCourse(int courseId)
+        /// <typeparam name="T">Object of interest class.</typeparam>
+        /// <param name="sql">SQL-query.</param>
+        public void DeleteData<T>(string sql)
         {
-            List<GroupModel> output;
-
             using (IDbConnection connection = new SqlConnection(GlobalConfig.GetConnString(connStringName)))
             {
-                var p = new DynamicParameters();
-                p.Add("@CourseId", courseId);
-
-                output = connection.Query<GroupModel>("dbo.spGroups_GetByCourse", p, commandType: CommandType.StoredProcedure).ToList();
+                connection.Execute(sql);
             }
-
-            return output;
         }
 
         /// <summary>
-        /// Gets student information by group from the database.
+        /// Gets a single data record by id from the database according to SQL-query provided.
         /// </summary>
-        /// <param name="courseId">Group id.</param>
-        /// <returns>A list of student information.</returns>
-        public List<StudentModel> GetStudents_ByGroup(int groupId)
+        /// <typeparam name="T">Object of interest class.</typeparam>
+        /// <param name="sql">SQL-query.</param>
+        /// <returns>A single data record by id from the database according to SQL-query provided.</returns>
+        public T GetSingleData_ById<T>(string sql)
         {
-            List<StudentModel> output;
-
             using (IDbConnection connection = new SqlConnection(GlobalConfig.GetConnString(connStringName)))
             {
-                var p = new DynamicParameters();
-                p.Add("@GroupId", groupId);
+                var output = connection.Query<T>(sql, new DynamicParameters());
 
-                output = connection.Query<StudentModel>("dbo.spStudents_GetByGroup", p, commandType: CommandType.StoredProcedure).ToList();
+                return output.First();
             }
-
-            return output;
-        }
-
-        /// <summary>
-        /// Gets student information by id from the database.
-        /// </summary>
-        /// <param name="courseId">Student id.</param>
-        /// <returns>Student information.</returns>
-        public StudentModel GetStudent_ById(int studentId)
-        {
-            List<StudentModel> output;
-
-            using (IDbConnection connection = new SqlConnection(GlobalConfig.GetConnString(connStringName)))
-            {
-                var p = new DynamicParameters();
-                p.Add("@StudentId", studentId);
-
-                output = connection.Query<StudentModel>("dbo.spStudent_GetById", p, commandType: CommandType.StoredProcedure).ToList();
-            }
-
-            return output.First();
         }
     }
 }

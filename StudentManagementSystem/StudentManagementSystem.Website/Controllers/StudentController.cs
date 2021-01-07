@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using StudentManagementSystem.Website.ViewModels;
 using StudentManagementSystemLibrary;
+using StudentManagementSystemLibrary.ModelProcessors;
 using StudentManagementSystemLibrary.Models;
 using System;
 using System.Collections.Generic;
@@ -15,16 +16,17 @@ namespace StudentManagementSystem.Website.Controllers
         public IActionResult StudentList(int groupId, string groupName)
         {
             var studentViewModel = new StudentViewModel();
-            studentViewModel.Students = GlobalConfig.Repository.GetStudents_ByGroup(groupId);
+            studentViewModel.Students = new GroupProcessor(GlobalConfig.SqlRepository).GetStudents_ByGroup(groupId);
+
             studentViewModel.CurrentGroupName = groupName;
             studentViewModel.CurrentGroupId = groupId;
 
             return View(studentViewModel);
         }
 
-        public IActionResult StudentEdit(int studentId, int groupId, string groupName) // delete group id and name if not works
+        public IActionResult StudentEdit(int studentId, int groupId, string groupName)
         {
-            StudentModel student = GlobalConfig.Repository.GetStudent_ById(studentId);
+            StudentModel student = new StudentProcessor(GlobalConfig.SqlRepository).GetStudent_ById(studentId);
             
             var studentEditViewModel = new StudentEditViewModel();
             studentEditViewModel.StudentId = student.StudentId;
@@ -39,18 +41,9 @@ namespace StudentManagementSystem.Website.Controllers
         [HttpPost]
         public IActionResult StudentEdit(StudentEditViewModel model)
         {
-            try // TODO - Delete the try catch
-            {
-                GlobalConfig.Repository.UpdateStudentName(model.StudentId, model.FirstName, model.LastName);
+            new StudentProcessor(GlobalConfig.SqlRepository).UpdateStudentName(model.StudentId, model.FirstName, model.LastName);
 
-                //return RedirectToAction("StudentList");
-                return RedirectToAction("StudentList", new { groupId = model.GroupId, groupName = model.GroupName });
-                //return View();
-            }
-            catch 
-            {
-                return View();
-            }
+            return RedirectToAction("StudentList", new { groupId = model.GroupId, groupName = model.GroupName });
         }
     }
 }

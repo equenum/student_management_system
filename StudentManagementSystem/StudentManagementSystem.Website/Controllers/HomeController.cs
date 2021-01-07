@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using StudentManagementSystem.Website.Models;
 using StudentManagementSystem.Website.ViewModels;
 using StudentManagementSystemLibrary;
+using StudentManagementSystemLibrary.ModelProcessors;
 using StudentManagementSystemLibrary.Models;
 using System;
 using System.Collections.Generic;
@@ -14,12 +15,10 @@ namespace StudentManagementSystem.Website.Controllers
 {
     public class HomeController : Controller
     {
-        //private IEnumerable<CourseModel> courses = GlobalConfig.Repository.GetCourses_All();
-
         public IActionResult Index()
         {
             var homeViewModel = new HomeViewModel();
-            homeViewModel.Courses = GlobalConfig.Repository.GetCourses_All();
+            homeViewModel.Courses = new CourseProcessor(GlobalConfig.SqlRepository).GetCourses_All();
 
             return View(homeViewModel);
         }

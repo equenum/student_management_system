@@ -13,35 +13,36 @@ namespace StudentManagementSystemLibrary
     public static class GlobalConfig
     {
         /// <summary>
-        /// Represents current repository.
-        /// </summary>
-        public static IRepository Repository { get; private set; }
-        /// <summary>
-        /// Represent current configurations. This property is used to get a database connection string.
+        /// Represents a configuration for GetAppSettingsFile().
         /// </summary>
         private static IConfiguration _configuration;
+        /// <summary>
+        /// Represents current global SqlRepository.
+        /// </summary>
+        public static IRepository SqlRepository;
 
         /// <summary>
-        /// Initializes current repository according to the provided repository type. 
-        /// This method should be called in order to use this library.
+        /// Initializes the database connection.
         /// </summary>
-        /// <param name="repositoryType">Current repository type.</param>
-        public static void InitializeConnections(RepositoryTypes repositoryType)
+        public static void InitializeConnections()
         {
-            if (repositoryType == RepositoryTypes.SqlServerRepository)
-            {
-                var sql = new SqlServerRepository();
-                Repository = sql;
-            }
-            // Add new conditions in case of new repositories.
+            SqlRepository = new SqlServerRepository();
         }
 
-        public static string GetConnString(string name) // TODO - Comment this if it is still used.
+        /// <summary>
+        /// Gets an actual connection string line for a given appsettings.json connection string name.
+        /// </summary>
+        /// <param name="name">Appsettings.json connection string name.</param>
+        /// <returns>An actual connection string line.</returns>
+        public static string GetConnString(string name)
         {
             return _configuration.GetConnectionString(name);
         }
 
-        public static void GetAppSettingsFile() // TODO - Comment this if it is still used as well.
+        /// <summary>
+        /// Loads appsettings.json file contents.
+        /// </summary>
+        public static void GetAppSettingsFile()
         {
             var builder = new ConfigurationBuilder()
                                  .SetBasePath(Directory.GetCurrentDirectory())

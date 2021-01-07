@@ -10,14 +10,10 @@ namespace StudentManagementSystemLibrary.Repositories
     /// </summary>
     public interface IRepository
     {
-        List<StudentModel> GetStudents_All();
-        List<GroupModel> GetGroups_All();
-        List<CourseModel> GetCourses_All();
-        List<GroupModel> GetGroups_ByCourse(int courseId);
-        List<StudentModel> GetStudents_ByGroup(int groupId);
-        StudentModel GetStudent_ById(int studentId);
-        void UpdateStudentName(int studentId, string updatedFirstName, string updatedLastName);
-        void UpdateGroupName(int groupId, string updatedName);
-        void DeleteGroup(int groupId);
+        public List<T> GetData_All<T>(string sql);
+        public List<T> GetListData_ById<T>(string sql);
+        public T GetSingleData_ById<T>(string sql);
+        public void UpdateData<T>(string sql);
+        public void DeleteData<T>(string sql);
     }
 }

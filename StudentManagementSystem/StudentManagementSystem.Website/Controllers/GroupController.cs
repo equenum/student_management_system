@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StudentManagementSystem.Website.ViewModels;
 using StudentManagementSystemLibrary;
+using StudentManagementSystemLibrary.ModelProcessors;
 using StudentManagementSystemLibrary.Models;
 using System;
 using System.Collections.Generic;
@@ -13,22 +14,20 @@ namespace StudentManagementSystem.Website.Controllers
     {
         public IActionResult GroupList(int courseId, string courseName)
         {
-
             var groupViewModel = new GroupViewModel();
-            groupViewModel.Groups = GlobalConfig.Repository.GetGroups_ByCourse(courseId);
+            groupViewModel.Groups = new CourseProcessor(GlobalConfig.SqlRepository).GetGroups_ByCourse(courseId);
             groupViewModel.CurrentCourseName = courseName;
             groupViewModel.CurrentCourseId = courseId;
-            
 
             foreach (var group in groupViewModel.Groups)
             {
-                group.Students = GlobalConfig.Repository.GetStudents_ByGroup(group.GroupId);
+                group.Students = new GroupProcessor(GlobalConfig.SqlRepository).GetStudents_ByGroup(group.GroupId);
             }
 
             return View(groupViewModel);
         }
 
-        public IActionResult GroupEdit(int groupId, string groupName, int courseId, string courseName) // Create Post version of this method
+        public IActionResult GroupEdit(int groupId, string groupName, int courseId, string courseName) 
         {
             var groupEditViewModel = new GroupEditViewModel();
             groupEditViewModel.GroupId = groupId;
@@ -40,16 +39,16 @@ namespace StudentManagementSystem.Website.Controllers
         }
 
         [HttpPost]
-        public IActionResult GroupEdit(GroupEditViewModel model) // Try catch maybe?
+        public IActionResult GroupEdit(GroupEditViewModel model)
         {
-            GlobalConfig.Repository.UpdateGroupName(model.GroupId, model.GroupName);
+            new GroupProcessor(GlobalConfig.SqlRepository).UpdateGroupName(model.GroupId, model.GroupName);
 
             return RedirectToAction("GroupList", new { courseId = model.CourseId, courseName = model.CourseName });
         }
 
         public IActionResult GroupDelete(int groupId, int courseId, string courseName)
         {
-            GlobalConfig.Repository.DeleteGroup(groupId);
+            new GroupProcessor(GlobalConfig.SqlRepository).DeleteGroup(groupId);
 
             return RedirectToAction("GroupList", new { courseId = courseId, courseName = courseName });
         }

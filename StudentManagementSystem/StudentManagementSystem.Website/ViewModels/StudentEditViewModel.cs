@@ -7,7 +7,7 @@ namespace StudentManagementSystem.Website.ViewModels
 {
     public class StudentEditViewModel
     {
-        public int StudentId { get; set; } // delete all about group if not works
+        public int StudentId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public int GroupId { get; set; }

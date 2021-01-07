@@ -54,10 +54,9 @@ namespace StudentManagementSystem.Website
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            // TODO - Delete if I am wrong. Rename
             // Initialize the database connection.
             GlobalConfig.GetAppSettingsFile();
-            GlobalConfig.InitializeConnections(RepositoryTypes.SqlServerRepository);
+            GlobalConfig.InitializeConnections();
         }
     }
 }
