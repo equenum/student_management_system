@@ -41,9 +41,14 @@ namespace StudentManagementSystem.Website.Controllers
         [HttpPost]
         public IActionResult StudentEdit(StudentEditViewModel model)
         {
-            new StudentProcessor(GlobalConfig.SqlRepository).UpdateStudentName(model.StudentId, model.FirstName, model.LastName);
+            if (ModelState.IsValid)
+            {
+                new StudentProcessor(GlobalConfig.SqlRepository).UpdateStudentName(model.StudentId, model.FirstName, model.LastName);
 
-            return RedirectToAction("StudentList", new { groupId = model.GroupId, groupName = model.GroupName });
+                return RedirectToAction("StudentList", new { groupId = model.GroupId, groupName = model.GroupName });
+            }
+
+            return View(model);
         }
     }
 }

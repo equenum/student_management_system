@@ -41,16 +41,28 @@ namespace StudentManagementSystem.Website.Controllers
         [HttpPost]
         public IActionResult GroupEdit(GroupEditViewModel model)
         {
-            new GroupProcessor(GlobalConfig.SqlRepository).UpdateGroupName(model.GroupId, model.GroupName);
+            if (ModelState.IsValid)
+            {
+                new GroupProcessor(GlobalConfig.SqlRepository).UpdateGroupName(model.GroupId, model.GroupName);
 
-            return RedirectToAction("GroupList", new { courseId = model.CourseId, courseName = model.CourseName });
+                return RedirectToAction("GroupList", new { courseId = model.CourseId, courseName = model.CourseName });
+            }
+
+            return View(model);
         }
 
         public IActionResult GroupDelete(int groupId, int courseId, string courseName)
         {
-            new GroupProcessor(GlobalConfig.SqlRepository).DeleteGroup(groupId);
+            var group = new GroupProcessor(GlobalConfig.SqlRepository).GetStudents_ByGroup(groupId);
 
-            return RedirectToAction("GroupList", new { courseId = courseId, courseName = courseName });
+            if (group.Count == 0)
+            {
+                new GroupProcessor(GlobalConfig.SqlRepository).DeleteGroup(groupId);
+
+                return RedirectToAction("GroupList", new { courseId = courseId, courseName = courseName });
+            }
+
+            return RedirectToAction("GroupList", new { courseId, courseName });
         }
     }
 }
