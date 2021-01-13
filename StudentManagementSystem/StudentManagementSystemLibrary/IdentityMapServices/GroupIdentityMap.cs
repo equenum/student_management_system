@@ -6,7 +6,7 @@ using System.Text;
 
 namespace StudentManagementSystemLibrary.IdentityMapServices
 {
-    public class GroupIdentityMap : IIdentityMap<GroupModel>
+    public class GroupIdentityMap : IGroupIdentityMap
     {
         private Dictionary<int, GroupModel> _pool = new Dictionary<int, GroupModel>();
 
@@ -28,7 +28,6 @@ namespace StudentManagementSystemLibrary.IdentityMapServices
             {
                 throw new InvalidOperationException("Invalid group id.");
             }
-            
         }
 
         public bool LookupGroupByCourse(int courseId)
@@ -54,7 +53,5 @@ namespace StudentManagementSystemLibrary.IdentityMapServices
                 return false;
             }
         }
-
-        
     }
 }

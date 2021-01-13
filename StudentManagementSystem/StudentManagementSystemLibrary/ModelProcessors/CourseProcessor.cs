@@ -58,7 +58,6 @@ namespace StudentManagementSystemLibrary.ModelProcessors
             sql = sql.Replace("COURSE_ID", $"{ courseId }");
 
             return _database.GetListData_ById<GroupModel>(sql);
-
         }
 
         /// <summary>

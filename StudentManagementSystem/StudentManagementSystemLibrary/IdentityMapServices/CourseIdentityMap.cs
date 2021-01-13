@@ -5,7 +5,7 @@ using System.Text;
 
 namespace StudentManagementSystemLibrary.IdentityMapServices
 {
-    public class CourseIdentityMap : IIdentityMap<CourseModel>
+    public class CourseIdentityMap : ICourseIdentityMap
     {
         private Dictionary<int, CourseModel> _pool = new Dictionary<int, CourseModel>();
 

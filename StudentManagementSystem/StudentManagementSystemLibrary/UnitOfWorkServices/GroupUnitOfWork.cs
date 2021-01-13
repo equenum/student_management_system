@@ -6,7 +6,7 @@ using System.Text;
 
 namespace StudentManagementSystemLibrary.UnitOfWorkServices
 {
-    public class GroupUnitOfWork : IUnitOfWork<GroupModel> // TODO - xml
+    public class GroupUnitOfWork : IUnitOfWork<GroupModel>
     {
         private IRepository _database;
 
@@ -69,6 +69,9 @@ namespace StudentManagementSystemLibrary.UnitOfWorkServices
             DeleteRemoved();
         }
 
+        /// <summary>
+        /// Inserts all of the objects which, were flagged as "new", to the database.
+        /// </summary>
         private void InsertNew()
         {
             if (newGroups.Count > 0)
@@ -77,6 +80,9 @@ namespace StudentManagementSystemLibrary.UnitOfWorkServices
             }
         }
 
+        /// <summary>
+        /// Updates all of the objects which, were flagged as "dirty", in the database.
+        /// </summary>
         private void UpdateDirty()
         {
             if (dirtyGroups.Count > 0)
@@ -88,9 +94,11 @@ namespace StudentManagementSystemLibrary.UnitOfWorkServices
 
                 dirtyGroups.Clear();
             }
-            
         }
 
+        /// <summary>
+        /// Deletes all of the objects which, were flagged as "removed", from the database.
+        /// </summary>
         private void DeleteRemoved()
         {
             if (removedGroups.Count > 0)
@@ -123,7 +131,7 @@ namespace StudentManagementSystemLibrary.UnitOfWorkServices
         /// Deletes the group specified by id from the database.
         /// </summary>
         /// <param name="groupId">Group id.</param>
-        public void DeleteGroup(int groupId)
+        private void DeleteGroup(int groupId)
         {
             string sql = "exec dbo.spGroup_DeleteById @GroupId = GROUD_ID ;";
 

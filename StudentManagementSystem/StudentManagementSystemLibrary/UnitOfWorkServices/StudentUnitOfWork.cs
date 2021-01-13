@@ -8,7 +8,7 @@ using System.Text;
 
 namespace StudentManagementSystemLibrary.UnitOfWorkServices
 {
-    public class StudentUnitOfWork : IUnitOfWork<StudentModel> // TODO -  xml comments
+    public class StudentUnitOfWork : IUnitOfWork<StudentModel>
     {
         private IRepository _database;
 
@@ -71,7 +71,9 @@ namespace StudentManagementSystemLibrary.UnitOfWorkServices
             DeleteRemoved();
         }
 
-
+        /// <summary>
+        /// Inserts all of the objects which, were flagged as "new", to the database.
+        /// </summary>
         private void InsertNew()
         {
             if (newStudents.Count > 0)
@@ -80,6 +82,9 @@ namespace StudentManagementSystemLibrary.UnitOfWorkServices
             }
         }
 
+        /// <summary>
+        /// Updates all of the objects which, were flagged as "dirty", in the database.
+        /// </summary>
         private void UpdateDirty() 
         {
             if (dirtyStudents.Count > 0)
@@ -93,6 +98,9 @@ namespace StudentManagementSystemLibrary.UnitOfWorkServices
             }
         }
 
+        /// <summary>
+        /// Deletes all of the objects which, were flagged as "removed", from the database.
+        /// </summary>
         private void DeleteRemoved()
         {
             if (removedStudents.Count > 0)

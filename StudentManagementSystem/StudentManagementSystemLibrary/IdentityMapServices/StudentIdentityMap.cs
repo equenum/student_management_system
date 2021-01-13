@@ -6,7 +6,7 @@ using System.Text;
 
 namespace StudentManagementSystemLibrary.IdentityMapServices
 {
-    public class StudentIdentityMap : IIdentityMap<StudentModel> // TODO - Decide should i make interfaces
+    public class StudentIdentityMap : IStudentIdentityMap
     {
         private Dictionary<int, StudentModel> _pool = new Dictionary<int, StudentModel>();
 
@@ -47,13 +47,11 @@ namespace StudentManagementSystemLibrary.IdentityMapServices
             if (_pool.ContainsKey(studentId))
             {
                 return _pool[studentId];
-
             }
             else
             {
                 throw new InvalidOperationException("Invalid student id.");
             }
-            
         }
     }
 }

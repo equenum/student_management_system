@@ -7,10 +7,9 @@ using System.Text;
 
 namespace StudentManagementSystemLibrary.ModelProcessors
 {
-    public class StudentProcessor
+    public class StudentProcessor 
     {
         private IRepository _database;
-       // public StudentIdentityMap IdentityMap = new StudentIdentityMap(); 
 
         public StudentProcessor(IRepository repository)
         {
@@ -29,8 +28,6 @@ namespace StudentManagementSystemLibrary.ModelProcessors
 
             return output;
         }
-
-        // TODO - Delete later. UpdateStudentName I mooved it to unit of work
 
         /// <summary>
         /// Updates first and second names for the student specified by id.
@@ -71,7 +68,7 @@ namespace StudentManagementSystemLibrary.ModelProcessors
         /// </summary>
         /// <param name="groupId">Group id.</param>
         /// <returns>A list of student information by groups.</returns>
-        public List<StudentModel> GetStudents_ByGroup(int groupId)
+        public List<StudentModel> GetStudents_ByGroup(int groupId) // TODO - One unit test?
         {
             string sql = "exec dbo.spStudents_GetByGroup @GroupId = GROUP_ID ;";
             sql = sql.Replace("GROUP_ID", $"{ groupId }");
@@ -84,8 +81,6 @@ namespace StudentManagementSystemLibrary.ModelProcessors
             }
 
             return output;
-
-            //return _database.GetListData_ById<StudentModel>(sql);
         }
     }
 }

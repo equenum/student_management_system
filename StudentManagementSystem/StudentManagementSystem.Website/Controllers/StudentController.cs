@@ -67,7 +67,6 @@ namespace StudentManagementSystem.Website.Controllers
                 suow.RegisterDirty(updatedStudent);
                 suow.Commit();
 
-                // Updating cache
                 CacheManager.StudentCache.Where(x => x.StudentId == updatedStudent.StudentId).First().FirstName = updatedStudent.FirstName;
                 CacheManager.StudentCache.Where(x => x.StudentId == updatedStudent.StudentId).First().LastName = updatedStudent.LastName;
 

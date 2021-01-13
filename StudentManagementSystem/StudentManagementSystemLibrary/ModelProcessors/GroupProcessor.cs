@@ -64,7 +64,7 @@ namespace StudentManagementSystemLibrary.ModelProcessors
         /// </summary>
         /// <param name="courseId">Course id.</param>
         /// <returns>A list of group information by courses.</returns>
-        public List<GroupModel> GetGroups_ByCourse(int courseId)
+        public List<GroupModel> GetGroups_ByCourse(int courseId) // TODO - Test
         {
             var sql = "exec dbo.spGroups_GetByCourse @CourseId = COURSE_ID ;";
 
@@ -95,6 +95,5 @@ namespace StudentManagementSystemLibrary.ModelProcessors
 
             _database.UpdateData<GroupModel>(sql);
         }
-        // TODO - Delete the method
     }
 }
