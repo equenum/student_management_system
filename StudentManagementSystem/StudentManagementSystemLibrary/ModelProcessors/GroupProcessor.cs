@@ -60,6 +60,28 @@ namespace StudentManagementSystemLibrary.ModelProcessors
         }
 
         /// <summary>
+        /// Gets all group information by course from the database.
+        /// </summary>
+        /// <param name="courseId">Course id.</param>
+        /// <returns>A list of group information by courses.</returns>
+        public List<GroupModel> GetGroups_ByCourse(int courseId)
+        {
+            var sql = "exec dbo.spGroups_GetByCourse @CourseId = COURSE_ID ;";
+
+            sql = sql.Replace("COURSE_ID", $"{ courseId }");
+
+            List<GroupModel> output = _database.GetListData_ById<GroupModel>(sql);
+
+            foreach (var group in output)
+            {
+                CacheManager.GroupIdentityMap.AddItem(group);
+            }
+
+            return output;
+            //return _database.GetListData_ById<GroupModel>(sql);
+        }
+
+        /// <summary>
         /// Updates name for the group specified by id.
         /// </summary>
         /// <param name="groupId">Group id.</param>
@@ -73,5 +95,6 @@ namespace StudentManagementSystemLibrary.ModelProcessors
 
             _database.UpdateData<GroupModel>(sql);
         }
+        // TODO - Delete the method
     }
 }

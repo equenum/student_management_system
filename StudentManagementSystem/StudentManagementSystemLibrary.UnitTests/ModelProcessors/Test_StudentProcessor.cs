@@ -54,7 +54,7 @@ namespace StudentManagementSystemLibrary.UnitTests.ModelProcessors
 
                 var studentProcessor = mock.Create<StudentProcessor>();
 
-                studentProcessor.UpdateStudentName(studentId, updatedFirstName, updatedLastName);
+                studentProcessor.UpdateStudent(studentId, updatedFirstName, updatedLastName);
 
                 mock.Mock<IRepository>().Verify(x => x.UpdateData<StudentModel>(sql), Times.Exactly(1));
             }

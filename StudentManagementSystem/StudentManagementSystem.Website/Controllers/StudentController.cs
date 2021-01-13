@@ -4,6 +4,7 @@ using StudentManagementSystem.Website.ViewModels;
 using StudentManagementSystemLibrary;
 using StudentManagementSystemLibrary.ModelProcessors;
 using StudentManagementSystemLibrary.Models;
+using StudentManagementSystemLibrary.UnitOfWorkServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,18 @@ namespace StudentManagementSystem.Website.Controllers
         public IActionResult StudentList(int groupId, string groupName)
         {
             var studentViewModel = new StudentViewModel();
-            studentViewModel.Students = new GroupProcessor(GlobalConfig.SqlRepository).GetStudents_ByGroup(groupId);
+
+            if (CacheManager.StudentIdentityMap.LookupStudentByGroup(groupId) == false)
+            {
+                List<StudentModel> tempList = new StudentProcessor(GlobalConfig.SqlRepository).GetStudents_ByGroup(groupId);
+
+                foreach (var student in tempList)
+                {
+                    CacheManager.StudentCache.Add(student);
+                }
+            }
+
+            studentViewModel.Students = CacheManager.StudentCache.Where(x => x.GroupId == groupId).ToList();
 
             studentViewModel.CurrentGroupName = groupName;
             studentViewModel.CurrentGroupId = groupId;
@@ -26,8 +38,8 @@ namespace StudentManagementSystem.Website.Controllers
 
         public IActionResult StudentEdit(int studentId, int groupId, string groupName)
         {
-            StudentModel student = new StudentProcessor(GlobalConfig.SqlRepository).GetStudent_ById(studentId);
-            
+            StudentModel student = CacheManager.StudentCache.Where(x => x.StudentId == studentId).First();
+
             var studentEditViewModel = new StudentEditViewModel();
             studentEditViewModel.StudentId = student.StudentId;
             studentEditViewModel.FirstName = student.FirstName;
@@ -43,7 +55,21 @@ namespace StudentManagementSystem.Website.Controllers
         {
             if (ModelState.IsValid)
             {
-                new StudentProcessor(GlobalConfig.SqlRepository).UpdateStudentName(model.StudentId, model.FirstName, model.LastName);
+                var updatedStudent = new StudentModel() 
+                { 
+                    StudentId = model.StudentId, 
+                    FirstName = model.FirstName, 
+                    LastName = model.LastName, 
+                    GroupId = model.GroupId 
+                };
+                
+                var suow = new StudentUnitOfWork(GlobalConfig.SqlRepository);
+                suow.RegisterDirty(updatedStudent);
+                suow.Commit();
+
+                // Updating cache
+                CacheManager.StudentCache.Where(x => x.StudentId == updatedStudent.StudentId).First().FirstName = updatedStudent.FirstName;
+                CacheManager.StudentCache.Where(x => x.StudentId == updatedStudent.StudentId).First().LastName = updatedStudent.LastName;
 
                 return RedirectToAction("StudentList", new { groupId = model.GroupId, groupName = model.GroupName });
             }

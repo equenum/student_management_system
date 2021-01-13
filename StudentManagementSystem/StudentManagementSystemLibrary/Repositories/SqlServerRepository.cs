@@ -11,7 +11,7 @@ namespace StudentManagementSystemLibrary.Repositories
 {
     public class SqlServerRepository : IRepository
     {
-        private readonly string connStringName = "SqlServer";
+        public readonly string connStringName = "SqlServer";
 
         /// <summary>
         /// Gets all data from the database according to SQL-query provided.

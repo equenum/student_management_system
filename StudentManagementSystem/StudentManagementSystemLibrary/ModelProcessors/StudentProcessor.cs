@@ -1,4 +1,5 @@
-﻿using StudentManagementSystemLibrary.Models;
+﻿using StudentManagementSystemLibrary.IdentityMapServices;
+using StudentManagementSystemLibrary.Models;
 using StudentManagementSystemLibrary.Repositories;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ namespace StudentManagementSystemLibrary.ModelProcessors
     public class StudentProcessor
     {
         private IRepository _database;
+       // public StudentIdentityMap IdentityMap = new StudentIdentityMap(); 
 
         public StudentProcessor(IRepository repository)
         {
@@ -28,13 +30,15 @@ namespace StudentManagementSystemLibrary.ModelProcessors
             return output;
         }
 
+        // TODO - Delete later. UpdateStudentName I mooved it to unit of work
+
         /// <summary>
         /// Updates first and second names for the student specified by id.
         /// </summary>
         /// <param name="studentId">Student id.</param>
         /// <param name="updatedFirstName">Updated (new) first name for the student.</param>
         /// <param name="updatedLastName">Updated (new) last name for the student.</param>
-        public void UpdateStudentName(int studentId, string updatedFirstName, string updatedLastName)
+        public void UpdateStudent(int studentId, string updatedFirstName, string updatedLastName)
         {
             string sql = "exec dbo.spStudent_UpdateNameById " +
                 "@StudentId = STUDENT_ID, " +
@@ -60,6 +64,28 @@ namespace StudentManagementSystemLibrary.ModelProcessors
             sql = sql.Replace("STUDENT_ID", $"{ studentId }");
 
             return _database.GetSingleData_ById<StudentModel>(sql);
+        }
+
+        /// <summary>
+        /// Gets all student information by group from the database.
+        /// </summary>
+        /// <param name="groupId">Group id.</param>
+        /// <returns>A list of student information by groups.</returns>
+        public List<StudentModel> GetStudents_ByGroup(int groupId)
+        {
+            string sql = "exec dbo.spStudents_GetByGroup @GroupId = GROUP_ID ;";
+            sql = sql.Replace("GROUP_ID", $"{ groupId }");
+
+            var output = _database.GetListData_ById<StudentModel>(sql);
+
+            foreach (var student in output)
+            {
+                CacheManager.StudentIdentityMap.AddItem(student);
+            }
+
+            return output;
+
+            //return _database.GetListData_ById<StudentModel>(sql);
         }
     }
 }
