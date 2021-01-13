@@ -18,7 +18,18 @@ namespace StudentManagementSystem.Website.Controllers
         public IActionResult Index()
         {
             var homeViewModel = new HomeViewModel();
-            homeViewModel.Courses = new CourseProcessor(GlobalConfig.SqlRepository).GetCourses_All();
+
+            if (CacheManager.CourseIdentityMap.IsNotEmpty() == false)
+            {
+                List<CourseModel> tempList = new CourseProcessor(GlobalConfig.SqlRepository).GetCourses_All();
+
+                foreach (var course in tempList)
+                {
+                    CacheManager.CourseCache.Add(course);
+                }
+            }
+
+            homeViewModel.Courses = CacheManager.CourseCache;
 
             return View(homeViewModel);
         }

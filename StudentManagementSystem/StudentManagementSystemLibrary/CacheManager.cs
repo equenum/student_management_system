@@ -14,6 +14,7 @@ namespace StudentManagementSystemLibrary
 
         public static StudentIdentityMap StudentIdentityMap = new StudentIdentityMap();
         public static GroupIdentityMap GroupIdentityMap = new GroupIdentityMap();
+        public static CourseIdentityMap CourseIdentityMap = new CourseIdentityMap();
         
     }
 }

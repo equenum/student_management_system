@@ -18,7 +18,7 @@ namespace StudentManagementSystemLibrary.IdentityMapServices
             }
         }
 
-        public bool LookupItemById(int studentId) // Do i need this lookup?
+        public bool LookupItemById(int studentId)
         {
             if (_pool.ContainsKey(studentId))
             {
@@ -44,7 +44,16 @@ namespace StudentManagementSystemLibrary.IdentityMapServices
 
         public StudentModel GetItem(int studentId)
         {
-            return _pool[studentId];
+            if (_pool.ContainsKey(studentId))
+            {
+                return _pool[studentId];
+
+            }
+            else
+            {
+                throw new InvalidOperationException("Invalid student id.");
+            }
+            
         }
     }
 }

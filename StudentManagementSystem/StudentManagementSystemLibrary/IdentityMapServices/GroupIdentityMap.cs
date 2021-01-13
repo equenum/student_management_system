@@ -20,7 +20,15 @@ namespace StudentManagementSystemLibrary.IdentityMapServices
 
         public GroupModel GetItem(int groupId)
         {
-            return _pool[groupId];
+            if (_pool.ContainsKey(groupId))
+            {
+                return _pool[groupId];
+            }
+            else
+            {
+                throw new InvalidOperationException("Invalid group id.");
+            }
+            
         }
 
         public bool LookupGroupByCourse(int courseId)
@@ -46,5 +54,7 @@ namespace StudentManagementSystemLibrary.IdentityMapServices
                 return false;
             }
         }
+
+        
     }
 }

@@ -38,6 +38,11 @@ namespace StudentManagementSystemLibrary.ModelProcessors
                 }
             }
 
+            foreach (var course in output)
+            {
+                CacheManager.CourseIdentityMap.AddItem(course);
+            }
+
             return output;
         }
 
