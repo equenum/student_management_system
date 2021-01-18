@@ -11,11 +11,6 @@ namespace StudentManagementSystemLibrary.UnitOfWorkServices
     public interface IUnitOfWork<T>
     {
         /// <summary>
-        /// Registers a newly added item.
-        /// </summary>
-        /// <param name="model">Item class.</param>
-        public void RegisterNew(T model);
-        /// <summary>
         /// Registers a new updated item.
         /// </summary>
         /// <param name="model">Item class.</param>

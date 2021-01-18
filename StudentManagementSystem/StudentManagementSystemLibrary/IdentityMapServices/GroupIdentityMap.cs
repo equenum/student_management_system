@@ -1,4 +1,5 @@
-﻿using StudentManagementSystemLibrary.Models;
+﻿using StudentManagementSystemLibrary.ModelProcessors;
+using StudentManagementSystemLibrary.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,51 +7,43 @@ using System.Text;
 
 namespace StudentManagementSystemLibrary.IdentityMapServices
 {
-    public class GroupIdentityMap : IGroupIdentityMap
+    public class GroupIdentityMap : IIdentityMap<GroupModel>
     {
+        private readonly object _poolLock = new object();
         private Dictionary<int, GroupModel> _pool = new Dictionary<int, GroupModel>();
 
-        public void AddItem(GroupModel group)
+        public void Add(GroupModel group)
         {
-            if (_pool.ContainsKey(group.GroupId) == false)
+            lock (_poolLock)
             {
                 _pool.Add(group.GroupId, group);
             }
         }
 
-        public GroupModel GetItem(int groupId)
+        public void Remove(GroupModel group)
         {
-            if (_pool.ContainsKey(groupId))
+            lock (_poolLock)
             {
-                return _pool[groupId];
-            }
-            else
-            {
-                throw new InvalidOperationException("Invalid group id.");
+                if (_pool.ContainsKey(group.GroupId))
+                {
+                    _pool.Remove(group.GroupId);
+                }
             }
         }
 
-        public bool LookupGroupByCourse(int courseId)
+        public void Clean()
         {
-            if (_pool.Any(x => x.Value.CourseId == courseId))
+            lock (_poolLock)
             {
-                return true;
-            }
-            else
-            {
-                return false;
+                _pool.Clear();
             }
         }
 
-        public bool LookupItemById(int groupId)
+        public List<GroupModel> GetAll()
         {
-            if (_pool.ContainsKey(groupId))
+            lock (_poolLock)
             {
-                return true;
-            }
-            else
-            {
-                return false;
+                return _pool.Select(x => x.Value).ToList();
             }
         }
     }

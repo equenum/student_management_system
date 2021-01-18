@@ -19,14 +19,14 @@ namespace StudentManagementSystemLibrary
         /// <summary>
         /// Represents current global SqlRepository.
         /// </summary>
-        public static IRepository SqlRepository;
+        public static IDataConnection Connection;
 
         /// <summary>
         /// Initializes the database connection.
         /// </summary>
         public static void InitializeConnections()
         {
-            SqlRepository = new SqlServerRepository();
+            Connection = new SqlServerRepository();
         }
 
         /// <summary>

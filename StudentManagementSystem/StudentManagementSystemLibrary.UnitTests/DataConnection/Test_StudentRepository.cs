@@ -11,24 +11,24 @@ using System.Text;
 namespace StudentManagementSystemLibrary.UnitTests.ModelProcessors
 {
     [TestClass]
-    public class Test_StudentProcessor
+    public class Test_StudentRepository
     {
         [DataRow("exec dbo.spStudents_GetAll;")]
         [DataTestMethod]
         public void GetStudents_All_ValidCall(string sql)
         {
-            var sampleStudents = new ProcessorSampleData().GetSampleStudents();
+            var sampleStudents = new DataConnectionSampleData().GetSampleStudents();
             using (var mock = AutoMock.GetLoose())
             {
-                mock.Mock<IRepository>()
+                mock.Mock<IDataConnection>()
                     .Setup(x => x.GetData_All<StudentModel>(sql))
                     .Returns(sampleStudents);
 
-                var studentProcessor = mock.Create<StudentProcessor>();
+                var studentRepository = mock.Create<StudentRepository>();
 
                 var expected = sampleStudents;
 
-                var actual = studentProcessor.GetStudents_All();
+                var actual = studentRepository.GetStudents_All();
 
                 Assert.IsTrue(actual != null);
                 Assert.AreEqual(expected.Count, actual.Count);
@@ -50,13 +50,13 @@ namespace StudentManagementSystemLibrary.UnitTests.ModelProcessors
         {
             using (var mock = AutoMock.GetLoose())
             {
-                mock.Mock<IRepository>().Setup(x => x.UpdateData<StudentModel>(sql));
+                mock.Mock<IDataConnection>().Setup(x => x.UpdateData<StudentModel>(sql));
 
-                var studentProcessor = mock.Create<StudentProcessor>();
+                var studentRepository = mock.Create<StudentRepository>();
 
-                studentProcessor.UpdateStudent(studentId, updatedFirstName, updatedLastName);
+                studentRepository.UpdateStudent(studentId, updatedFirstName, updatedLastName);
 
-                mock.Mock<IRepository>().Verify(x => x.UpdateData<StudentModel>(sql), Times.Exactly(1));
+                mock.Mock<IDataConnection>().Verify(x => x.UpdateData<StudentModel>(sql), Times.Exactly(1));
             }
         }
 
@@ -64,18 +64,18 @@ namespace StudentManagementSystemLibrary.UnitTests.ModelProcessors
         [DataTestMethod]
         public void GetStudent_ById_ValidCall(string sql, int studentId)
         {
-            var sampleStudent = new ProcessorSampleData().GetSampleStudent();
+            var sampleStudent = new DataConnectionSampleData().GetSampleStudent();
 
             using (var mock = AutoMock.GetLoose())
             {
-                mock.Mock<IRepository>()
+                mock.Mock<IDataConnection>()
                     .Setup(x => x.GetSingleData_ById<StudentModel>(sql))
                     .Returns(sampleStudent);
 
-                var studentProcessor = mock.Create<StudentProcessor>();
+                var studentRepository = mock.Create<StudentRepository>();
 
                 var expected = sampleStudent;
-                var actual = studentProcessor.GetStudent_ById(studentId);
+                var actual = studentRepository.GetStudent_ById(studentId);
 
                 Assert.IsTrue(actual != null);
 

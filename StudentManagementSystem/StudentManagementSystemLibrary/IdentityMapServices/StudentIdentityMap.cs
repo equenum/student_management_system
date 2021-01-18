@@ -1,4 +1,5 @@
-﻿using StudentManagementSystemLibrary.Models;
+﻿using StudentManagementSystemLibrary.ModelProcessors;
+using StudentManagementSystemLibrary.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,51 +7,43 @@ using System.Text;
 
 namespace StudentManagementSystemLibrary.IdentityMapServices
 {
-    public class StudentIdentityMap : IStudentIdentityMap
+    public class StudentIdentityMap : IIdentityMap<StudentModel>
     {
+        private readonly object _poolLock = new object();
         private Dictionary<int, StudentModel> _pool = new Dictionary<int, StudentModel>();
 
-        public void AddItem(StudentModel student)
+        public void Add(StudentModel student)
         {
-            if (_pool.ContainsKey(student.StudentId) == false)
+            lock (_poolLock)
             {
                 _pool.Add(student.StudentId, student);
             }
         }
 
-        public bool LookupItemById(int studentId)
+        public void Remove(StudentModel student)
         {
-            if (_pool.ContainsKey(studentId))
+            lock (_poolLock)
             {
-                return true;
-            }
-            else
-            {
-                return false;
+                if (_pool.ContainsKey(student.StudentId))
+                {
+                    _pool.Remove(student.StudentId);
+                }
             }
         }
 
-        public bool LookupStudentByGroup(int groupId)
+        public void Clean()
         {
-            if (_pool.Any(x => x.Value.GroupId == groupId))
+            lock (_poolLock)
             {
-                return true;
-            }
-            else
-            {
-                return false;
+                _pool.Clear();
             }
         }
 
-        public StudentModel GetItem(int studentId)
+        public List<StudentModel> GetAll()
         {
-            if (_pool.ContainsKey(studentId))
+            lock (_poolLock)
             {
-                return _pool[studentId];
-            }
-            else
-            {
-                throw new InvalidOperationException("Invalid student id.");
+                return _pool.Select(x => x.Value).ToList();
             }
         }
     }

@@ -54,7 +54,7 @@ namespace StudentManagementSystem.Website
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            // Initialize the database connection.
+            // Initialize the database connection for StudentManagementSystemLibrary.
             GlobalConfig.GetAppSettingsFile();
             GlobalConfig.InitializeConnections();
         }

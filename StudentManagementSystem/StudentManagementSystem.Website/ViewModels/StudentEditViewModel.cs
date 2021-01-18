@@ -17,7 +17,6 @@ namespace StudentManagementSystem.Website.ViewModels
         [RegularExpression(@"^[_A-z]*((-)*[_A-z])*$", ErrorMessage = "Invalid input format.")]
         [Required(ErrorMessage = "Required field."), MaxLength(30)]
         public string LastName { get; set; }
-
         public int GroupId { get; set; }
         public string GroupName { get; set; }
     }

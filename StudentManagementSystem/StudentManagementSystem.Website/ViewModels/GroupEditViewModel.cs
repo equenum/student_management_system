@@ -12,7 +12,6 @@ namespace StudentManagementSystem.Website.ViewModels
 
         [Required(ErrorMessage = "Required field."), MaxLength(20)]
         public string GroupName { get; set; }
-
         public int CourseId { get; set; }
         public string CourseName { get; set; }
     }

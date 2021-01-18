@@ -18,18 +18,16 @@ namespace StudentManagementSystem.Website.Controllers
         {
             var studentViewModel = new StudentViewModel();
 
-            if (CacheManager.StudentIdentityMap.LookupStudentByGroup(groupId) == false)
+            if (UOWManager.StudentUOW.LookupStudentsByGroup(groupId) == false)
             {
-                List<StudentModel> tempList = new StudentProcessor(GlobalConfig.SqlRepository).GetStudents_ByGroup(groupId);
-
-                foreach (var student in tempList)
+                if (UOWManager.StudentUOW.TryRegisterStudentsByGroup(groupId) == false)
                 {
-                    CacheManager.StudentCache.Add(student);
+                    Response.StatusCode = 404;
+                    return View("NotFound");
                 }
             }
 
-            studentViewModel.Students = CacheManager.StudentCache.Where(x => x.GroupId == groupId).ToList();
-
+            studentViewModel.Students = UOWManager.StudentUOW.GetStudentsByGroup(groupId);
             studentViewModel.CurrentGroupName = groupName;
             studentViewModel.CurrentGroupId = groupId;
 
@@ -38,7 +36,7 @@ namespace StudentManagementSystem.Website.Controllers
 
         public IActionResult StudentEdit(int studentId, int groupId, string groupName)
         {
-            StudentModel student = CacheManager.StudentCache.Where(x => x.StudentId == studentId).First();
+            StudentModel student = UOWManager.StudentUOW.GetStudentById(studentId);
 
             var studentEditViewModel = new StudentEditViewModel();
             studentEditViewModel.StudentId = student.StudentId;
@@ -47,7 +45,7 @@ namespace StudentManagementSystem.Website.Controllers
             studentEditViewModel.GroupId = groupId;
             studentEditViewModel.GroupName = groupName;
 
-            return View(studentEditViewModel);
+            return View(studentEditViewModel); 
         }
 
         [HttpPost]
@@ -62,13 +60,9 @@ namespace StudentManagementSystem.Website.Controllers
                     LastName = model.LastName, 
                     GroupId = model.GroupId 
                 };
-                
-                var suow = new StudentUnitOfWork(GlobalConfig.SqlRepository);
-                suow.RegisterDirty(updatedStudent);
-                suow.Commit();
 
-                CacheManager.StudentCache.Where(x => x.StudentId == updatedStudent.StudentId).First().FirstName = updatedStudent.FirstName;
-                CacheManager.StudentCache.Where(x => x.StudentId == updatedStudent.StudentId).First().LastName = updatedStudent.LastName;
+                UOWManager.StudentUOW.RegisterDirty(updatedStudent);
+                UOWManager.StudentUOW.Commit();
 
                 return RedirectToAction("StudentList", new { groupId = model.GroupId, groupName = model.GroupName });
             }

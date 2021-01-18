@@ -5,7 +5,7 @@ using System.Text;
 
 namespace StudentManagementSystemLibrary.UnitTests.ModelProcessors
 {
-    public class ProcessorSampleData
+    public class DataConnectionSampleData
     {
         public List<CourseModel> GetSampleCources()
         {

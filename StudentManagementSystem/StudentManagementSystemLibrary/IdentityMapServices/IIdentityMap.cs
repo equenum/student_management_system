@@ -13,18 +13,20 @@ namespace StudentManagementSystemLibrary.IdentityMapServices
         /// Add item to the identity map.
         /// </summary>
         /// <param name="model">Item class.</param>
-        void AddItem(T model);
+        public void Add(T model);
         /// <summary>
-        /// Get item from the identity map by id.
+        /// Removes the specified item from identity map.
         /// </summary>
-        /// <param name="itemId">Item id.</param>
-        /// <returns>Item object.</returns>
-        T GetItem(int itemId);
+        /// <param name="model">Item class object.</param>
+        public void Remove(T model);
         /// <summary>
-        /// Looks up if the item entity specified by id already present in the identity map.
+        /// Removes all items from the identity map.
         /// </summary>
-        /// <param name="itemId">Item id.</param>
-        /// <returns>Item object.</returns>
-        bool LookupItemById(int itemId);
+        public void Clean();
+        /// <summary>
+        /// Gets all items from the identity map.
+        /// </summary>
+        /// <returns>All item objects.</returns>
+        public List<T> GetAll();
     }
 }

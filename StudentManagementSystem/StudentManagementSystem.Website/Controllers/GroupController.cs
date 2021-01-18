@@ -17,36 +17,19 @@ namespace StudentManagementSystem.Website.Controllers
         {
             var groupViewModel = new GroupViewModel();
 
-            if (CacheManager.GroupIdentityMap.LookupGroupByCourse(courseId) == false)
+            if (UOWManager.GroupUOW.LookupGroupsByCourse(courseId) == false)
             {
-                List<GroupModel> tempList = new GroupProcessor(GlobalConfig.SqlRepository).GetGroups_ByCourse(courseId);
-
-                foreach (var group in tempList)
+                if (UOWManager.GroupUOW.TryRegisterGroupsByCourse(courseId) == false)
                 {
-                    CacheManager.GroupCache.Add(group);
+                    Response.StatusCode = 404;
+                    return View("NotFound");
                 }
             }
 
-            groupViewModel.Groups = CacheManager.GroupCache.Where(x => x.CourseId == courseId).ToList();
-            
+            groupViewModel.Groups = UOWManager.GroupUOW.GetGroupsByCourse(courseId);
             groupViewModel.CurrentCourseName = courseName;
             groupViewModel.CurrentCourseId = courseId;
-
-            foreach (var group in groupViewModel.Groups)
-            {
-                if (CacheManager.StudentIdentityMap.LookupStudentByGroup(group.GroupId) == false)
-                {
-                    List<StudentModel> tempList = new StudentProcessor(GlobalConfig.SqlRepository).GetStudents_ByGroup(group.GroupId);
-
-                    foreach (var student in tempList)
-                    {
-                        CacheManager.StudentCache.Add(student);
-                    }
-                }
-
-                group.Students = CacheManager.StudentCache.Where(x => x.GroupId == group.GroupId).ToList();
-            }
-
+          
             return View(groupViewModel);
         }
 
@@ -66,14 +49,17 @@ namespace StudentManagementSystem.Website.Controllers
         {
             if (ModelState.IsValid)
             {
-                var groupUpdated = new GroupModel() { GroupId = model.GroupId, Name = model.GroupName };
-               
-                var guow = new GroupUnitOfWork(GlobalConfig.SqlRepository);
-                guow.RegisterDirty(groupUpdated);
-                guow.Commit();
+                var groupUpdated = new GroupModel()
+                {
+                    GroupId = model.GroupId,
+                    Name = model.GroupName,
+                    CourseId = model.CourseId,
+                    Students = UOWManager.StudentUOW.GetStudentsByGroup(model.GroupId)
+                };
 
-                CacheManager.GroupCache.Where(x => x.GroupId == groupUpdated.GroupId).First().Name = groupUpdated.Name;
-                
+                UOWManager.GroupUOW.RegisterDirty(groupUpdated);
+                UOWManager.GroupUOW.Commit();
+
                 return RedirectToAction("GroupList", new { courseId = model.CourseId, courseName = model.CourseName });
             }
 
@@ -82,18 +68,14 @@ namespace StudentManagementSystem.Website.Controllers
 
         public IActionResult GroupDelete(int groupId, int courseId, string courseName)
         {
-            List<StudentModel> group = CacheManager.StudentCache.Where(x => x.GroupId == groupId).ToList();
+            List<StudentModel> group = UOWManager.StudentUOW.GetStudentsByGroup(groupId);
 
             if (group.Count == 0)
             {
                 var groupRemoved = new GroupModel() { GroupId = groupId };
-                
-                var guow = new GroupUnitOfWork(GlobalConfig.SqlRepository);
-                guow.RegisterRemoved(groupRemoved);
-                guow.Commit();
 
-                var tempRemovedGroup = CacheManager.GroupCache.Where(x => x.GroupId == groupRemoved.GroupId).First();
-                CacheManager.GroupCache.Remove(tempRemovedGroup);
+                UOWManager.GroupUOW.RegisterRemoved(groupRemoved);
+                UOWManager.GroupUOW.Commit();
 
                 return RedirectToAction("GroupList", new { courseId = courseId, courseName = courseName });
             }

@@ -19,17 +19,16 @@ namespace StudentManagementSystem.Website.Controllers
         {
             var homeViewModel = new HomeViewModel();
 
-            if (CacheManager.CourseIdentityMap.IsNotEmpty() == false)
+            if(UOWManager.CourseUOW.LookupCourses() == false)
             {
-                List<CourseModel> tempList = new CourseProcessor(GlobalConfig.SqlRepository).GetCourses_All();
-
-                foreach (var course in tempList)
+                if (UOWManager.CourseUOW.TryRegisterCoursesAll() == false)
                 {
-                    CacheManager.CourseCache.Add(course);
+                    Response.StatusCode = 404;
+                    return View("NotFound");
                 }
             }
 
-            homeViewModel.Courses = CacheManager.CourseCache;
+            homeViewModel.Courses = UOWManager.CourseUOW.GetCoursesAll();
 
             return View(homeViewModel);
         }
