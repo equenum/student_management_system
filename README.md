@@ -7,7 +7,7 @@ This application has a Three-tier architecture:
 
 - Presentation layer: ASP.NET Core MVC (Razor, .NET Core);
 - Business layer: Class Library (C#, .NET Core);
-- Data layer: Local MS Server database (T-SQL);
+- Data layer: Local MS Server database (T-SQL).
 
 There are some additional project details (architecture, technologies/patterns used, etc.):
 
@@ -21,7 +21,7 @@ There are some additional project details (architecture, technologies/patterns u
 - Repository pattern (IDataConnection);
 - Identity Map pattern (IIdentityMap);
 - View form input validation (ASP.NET Core DataAnnotations);
-- Unit-tests with mocking (MS Test, Autofac.Extras.Moq, Moq);
+- Unit-tests with mocking (MS Test, Autofac.Extras.Moq, Moq).
 
 # P.s.
 
