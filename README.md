@@ -3,7 +3,7 @@ A simple application that can be used for student records management. In theory,
 
 # Description:
 
-This application has a Three-tier architecture:
+This application has the following architecture:
 
 - Presentation layer: ASP.NET Core MVC (Razor, .NET Core);
 - Business layer: Class Library (C#, .NET Core);
