@@ -7,7 +7,7 @@ This application has the following architecture:
 
 - Presentation layer: ASP.NET Core MVC (Razor, .NET Core);
 - Business layer: Class Library (C#, .NET Core);
-- Data layer: Local MS Server database (T-SQL).
+- Data layer: Local MSServer database (T-SQL).
 
 There are some additional project details (architecture, technologies/patterns used, etc.):
 
